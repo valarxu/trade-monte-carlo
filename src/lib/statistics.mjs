@@ -41,7 +41,7 @@ export function statisticGroups(result) {
     ] },
     { id: 'trades', title: '逐笔表现与连续亏损', rows: [
       row('每条路径交易笔数', result.parameters.count, result.parameters.count, '全部路径与历史保持相同交易总笔数。', 'integer'),
-      row('平均胜率', s.winRateMean, o.winRatePct, '各模拟价格收益率>0的交易占比，再取平均。', 'unsigned'),
+      row('平均胜率', s.winRateMean, o.winRatePct, '各模拟单笔收益率>0的交易占比，再取平均。', 'unsigned'),
       row('模拟实际胜率范围', s.winRateMin, o.winRatePct, '本批模拟实际出现的最低与最高胜率。', 'range', { upperValue: s.winRateMax }),
       row('盈亏比中位数', s.payoffRatioMedian, o.payoffRatio, '逐路径：平均盈利收益率÷平均亏损收益率绝对值，再取中位数。', 'ratio'),
       row('最长连亏笔数中位数', s.losingStreakMedian, o.longestLosingStreak, '先算每条路径最长连续亏损笔数，再取中位数。', 'trades'),

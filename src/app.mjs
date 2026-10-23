@@ -162,7 +162,7 @@ function renderAsset() {
   ];
   $('result').setAttribute('aria-labelledby', `tab-${r.symbol}`);
   $('result').innerHTML = `
-    <div class="result-top"><div><div class="eyebrow">${state.synthetic ? 'SYNTHETIC EXAMPLE' : 'LOCAL ANALYSIS'}</div><h2>${esc(r.symbol)} <span class="note">${p.count} 笔交易</span></h2><p>${esc(date(p.firstClose))}${p.lastClose ? ` 至 ${esc(date(p.lastClose))}` : ''} · 价格胜率 ${rate(p.priceWinRatePct)}</p></div><button data-action="download">下载32项统计 CSV</button></div>
+    <div class="result-top"><div><div class="eyebrow">${state.synthetic ? 'SYNTHETIC EXAMPLE' : 'LOCAL ANALYSIS'}</div><h2>${esc(r.symbol)} <span class="note">${p.count} 笔交易</span></h2><p>${esc(date(p.firstClose))}${p.lastClose ? ` 至 ${esc(date(p.lastClose))}` : ''} · 单笔收益胜率 ${rate(p.priceWinRatePct)}</p></div><button data-action="download">下载32项统计 CSV</button></div>
     <div class="kpis">${kpis.map(([label, value, cls]) => `<div class="kpi"><span>${esc(label)}</span><strong class="${cls}">${value}</strong></div>`).join('')}</div>
     <div class="model-line"><span>区间笔数 ±${r.options.countTolerance * 100}%</span><span>胜率 ±${r.options.winTolerance * 100} 个百分点</span><span>1倍名义仓位逐笔复投</span><span>收益率 P5—P95：${pct(s.p5)} 至 ${pct(s.p95)}</span><span>全部 ${num(r.paths)} 条 · 种子 ${r.seed}</span></div>
     <div class="plot-grid"><section class="panel"><div class="panel-header"><h3>累计收益路径</h3><span>累计收益率 / 交易笔数</span></div><div class="legend"><span><i class="history"></i>历史顺序</span><span><i></i>模拟路径</span></div><div id="path-chart" class="chart-wrap"></div>
@@ -173,7 +173,7 @@ function renderAsset() {
     <div class="constraint-line"><strong>每条路径同时满足全部约束</strong><span>胜率限制 ${rate(p.permittedWinRateMinPct)}–${rate(p.permittedWinRateMaxPct)}</span><span>整数约束下可达 ${rate(p.feasibleWinRateMinPct)}–${rate(p.feasibleWinRateMaxPct)}</span></div>
     <div class="statistics-intro"><h2>完整统计列表 <span class="note">32 项</span></h2><p class="note">统计使用全部 ${num(r.paths)} 条模拟。历史列仅是一条真实顺序的复算参考。爆仓按曾跌破初始资金${floor}%统计，之后恢复也不撤销标记；曲线继续计算。最大回撤从此前资金峰值计算。</p></div>
     <div class="statistics-grid">${statisticGroups(r).map(group => `<section class="panel"><div class="panel-header"><h3>${group.title}</h3></div><div class="table-scroll"><table aria-label="${esc(r.symbol)} ${group.title}"><thead><tr><th>指标</th><th>全部模拟</th><th>历史顺序参考</th><th>说明</th></tr></thead><tbody>${group.rows.map(row => `<tr><td>${esc(row.metric)}</td><td>${formatValue(row.simulatedValue, row)}</td><td>${formatValue(row.historicalValue, row, true)}</td><td>${esc(row.definition)}</td></tr>`).join('')}</tbody></table></div></section>`).join('')}</div>
-    <p class="note">最差值、最好值和0%触线率只描述本批模拟。区间内仅抽取已发生的收益率，不覆盖历史之外的损失。收益标准差单位为百分点；盈亏比按单笔价格收益率计算。未计费用、杠杆、持仓期间浮亏及同时持仓。</p>`;
+    <p class="note">最差值、最好值和0%触线率只描述本批模拟。区间内仅抽取已发生的收益率，不覆盖历史之外的损失。收益标准差单位为百分点；盈亏比按导入的单笔收益率计算。均价模式未计费用；所有模式均未模拟杠杆、持仓期间浮亏及同时持仓。</p>`;
   drawCharts();
 }
 function selectPath(id, focusAction = '') {
