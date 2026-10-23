@@ -1,0 +1,22 @@
+# Real inputs and generated reports belong here and must remain local.
+local-data/
+local-output/
+dist/
+node_modules/
+coverage/
+.env
+.env.*
+*.log
+.DS_Store
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.html
+!index.html
+!examples/*.csv
+snapshot*.json
+*.zip
+*.png
+*.jpg
+*.pdf

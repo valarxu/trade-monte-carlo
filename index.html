@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="在浏览器本地导入历史交易，生成有分布约束的蒙特卡洛模拟。">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' data: 'unsafe-inline'; style-src 'self' 'unsafe-inline'; worker-src 'self' data: blob:; connect-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'">
+  <title>交易蒙特卡洛 · Trade Monte Carlo</title>
+  <link rel="stylesheet" href="./src/styles.css">
+</head>
+<body>
+  <header class="masthead">
+    <div class="masthead-inner"><div class="brand-mark" aria-hidden="true">∿</div><h1>交易蒙特卡洛</h1><span class="brand-en">TRADE MONTE CARLO</span><span class="local-tag">本地计算</span><button id="theme-button" class="quiet" aria-label="切换明暗主题">浅色模式</button></div>
+    <nav id="asset-tabs" class="asset-tabs" role="tablist" aria-label="币种"></nav>
+  </header>
+  <main>
+    <section class="setup" aria-label="导入与模拟设置">
+      <div class="setup-top"><div><h2>分布约束蒙特卡洛模拟</h2><p id="dataset-label">正在载入合成示例…</p></div><div class="actions"><button id="import-button">导入 CSV / JSON</button><button id="demo-button" class="quiet">合成示例</button><input id="file-input" type="file" accept=".csv,.json,text/csv,application/json" hidden></div></div>
+      <div class="dataset-controls"><label>账户 <select id="account-select" aria-label="账户"></select></label><fieldset id="symbol-controls"><legend>分析币种</legend></fieldset></div>
+      <form id="run-form" class="run-form">
+        <label>每币种模拟 <select id="paths" name="paths"><option>100</option><option>500</option><option>1000</option><option>5000</option><option selected>10000</option></select></label>
+        <label>随机种子 <input id="seed" name="seed" type="number" min="0" max="4294967295" step="1" value="20261023" required></label>
+        <button id="run-button" type="submit" class="primary">开始模拟</button><button id="reseed-button" type="button">换一批模拟</button><button id="cancel-button" type="button" hidden>取消计算</button>
+        <details class="advanced"><summary>约束与风险参数</summary><div class="advanced-fields">
+          <label>区间笔数容差 <span><input id="count-tolerance" type="number" min="0" max="100" step="1" value="20" required> %</span></label>
+          <label>胜率容差 <span><input id="win-tolerance" type="number" min="0" max="100" step=".1" value="5" required> 个百分点</span></label>
+          <label>爆仓资金线 <span>初始资金的 <input id="risk-floor" type="number" min="0" max="100" step="1" value="50" required> %</span></label>
+        </div></details>
+      </form>
+      <div id="status" role="status" aria-live="polite"></div><p id="error" role="alert" hidden></p>
+    </section>
+    <section id="result" role="tabpanel" tabindex="-1"><div class="empty">导入记录后，选择账户和币种开始模拟。</div></section>
+    <details class="method"><summary>计算方法与数据口径</summary><div>
+      <p>固定各币种的交易笔数。各收益区间笔数限定在 ⌈原笔数×(1−容差)⌉ 至 ⌊原笔数×(1＋容差)⌋，总数保持不变；价格胜率同时限制在历史胜率上下指定百分点内。区间内有放回抽取真实历史收益率，再打乱交易顺序。</p>
+      <p>计数组合按历史区间概率对应的条件多项分布抽样，使用动态规划避免枚举全部组合。只有1–4笔的小区间，在默认±20%和整数约束下可能无法改变笔数；历史零笔区间保持零笔。可达胜率可能窄于设定范围。</p>
+      <p>初始净值为1，每笔以当前权益的1倍名义金额串行复投。红线为历史价格收益率按原平仓顺序复算，蓝线为模拟。价格收益不含手续费、资金费、杠杆和实际仓位，不等同真实账户净值。</p>
+      <p>爆仓是自定义资金阈值：任意一笔后净值严格低于初始资金的指定比例，就计入该路径；恢复后仍保留标记，曲线继续计算。最大回撤则从此前资金峰值计算。模型不观察持仓期间浮亏，也不模拟交易所强平。</p>
+      <p>百分位和概率只描述这套受限历史模型。本模型不生成历史之外的新尾部损失、市场环境变化或策略失效；0%表示本批未观察到，不表示真实风险为零。没有时间列时按文件顺序回放；不同计价交易对始终分别建模。</p>
+    </div></details>
+  </main>
+  <footer>数据在本地处理 · 不使用外部 CDN、分析追踪或云端计算 · 32 项统计基于全部模拟</footer>
+  <script id="mc-config" type="application/json">{}</script>
+  <script type="module" src="./src/app.mjs"></script>
+</body>
+</html>

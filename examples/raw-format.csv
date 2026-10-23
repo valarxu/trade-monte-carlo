@@ -1,0 +1,7 @@
+account_id,record_id,symbol,direction,open_price,close_price,closed_at
+demo,example-1,BTC-USDT,long,100,104,2000-01-01T00:00:00Z
+demo,example-2,BTC-USDT,short,100,102,2000-01-02T00:00:00Z
+demo,example-3,BTC-USDT,long,100,98,2000-01-03T00:00:00Z
+demo,example-4,ETH-USDT,long,100,106,2000-01-01T00:00:00Z
+demo,example-5,ETH-USDT,short,100,103,2000-01-02T00:00:00Z
+demo,example-6,ETH-USDT,long,100,99,2000-01-03T00:00:00Z
